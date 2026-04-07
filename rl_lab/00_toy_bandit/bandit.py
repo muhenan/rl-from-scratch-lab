@@ -1,4 +1,5 @@
 import random
+import matplotlib.pyplot as plt
 
 # ─── Problem Setup ────────────────────────────────────────────────────────────
 # 3 arms, each with a fixed (unknown to agent) reward probability
@@ -11,6 +12,9 @@ policy = [1/3, 1/3, 1/3]
 
 learning_rate = 0.1
 num_steps = 100
+
+# ─── History (for plotting) ───────────────────────────────────────────────────
+history = [[], [], []]   # history[i] = policy[i] at each step
 
 # ─── Run Loop ─────────────────────────────────────────────────────────────────
 for step in range(1, num_steps + 1):
@@ -49,6 +53,10 @@ for step in range(1, num_steps + 1):
 
     print(f"Updated Policy: [{policy[0]:.4f}, {policy[1]:.4f}, {policy[2]:.4f}]")
 
+    history[0].append(policy[0])
+    history[1].append(policy[1])
+    history[2].append(policy[2])
+
 # ─── Final Result ─────────────────────────────────────────────────────────────
 print("\n" + "="*50)
 print("Final Policy:")
@@ -56,3 +64,17 @@ print(f"  arm 0 (prob=0.2): {policy[0]:.4f}")
 print(f"  arm 1 (prob=0.5): {policy[1]:.4f}")
 print(f"  arm 2 (prob=0.8): {policy[2]:.4f}")
 print(f"\nBest arm chosen by policy: arm {policy.index(max(policy))}")
+
+# ─── Plot ─────────────────────────────────────────────────────────────────────
+steps = list(range(1, num_steps + 1))
+plt.plot(steps, history[0], label="arm 0 (true p=0.2)")
+plt.plot(steps, history[1], label="arm 1 (true p=0.5)")
+plt.plot(steps, history[2], label="arm 2 (true p=0.8)")
+plt.xlabel("Step")
+plt.ylabel("Policy Probability")
+plt.title("Multi-Armed Bandit: Policy over Time")
+plt.legend()
+plt.tight_layout()
+plt.savefig("rl_lab/00_toy_bandit/policy_plot.png", dpi=150)
+print("\nPlot saved to rl_lab/00_toy_bandit/policy_plot.png")
+plt.show()
